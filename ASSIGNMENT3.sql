@@ -22,6 +22,12 @@ CREATE TABLE AirplaneType (
   MaxSeats INT NOT NULL
 );
 
+CREATE TABLE AllowedAirplaneTypes (
+  AirportCode VARCHAR(10) NOT NULL,
+  FlightNumber VARCHAR(20) NOT NULL,
+  FOREIGN KEY (AirportCode) REFERENCES Airport(AirportCode)
+);
+
 CREATE TABLE Customer(
 	PassportNumber CHAR(10) NOT NULL PRIMARY KEY,
     CustomerName VARCHAR(50) NOT NULL,
@@ -31,7 +37,7 @@ CREATE TABLE Customer(
 
 CREATE TABLE Airplane (
   AirplaneId INT NOT NULL PRIMARY KEY,
-  TotalSeats INT NOT NULL,
+  BoughtDate DATE NOT NULL,
   TypeId INT NOT NULL,
   FOREIGN KEY (TypeId) REFERENCES AirplaneType(TypeId)
 );
@@ -66,17 +72,29 @@ CREATE TABLE Ticket (
 );
 
 CREATE TABLE AirplaneMaintainance(
-  AirplaneId INT NOT NULL,
-  maintainanceDate DATE NOT NULL,
-  FOREIGN KEY (AirplaneId) REFERENCES Airplane(AirplaneId)
+  MaintainenceTeam VARCHAR(50) PRIMARY KEY
+);
+
+CREATE TABLE DeptMaintenance (
+	MaintainenceTeam VARCHAR(50) NOT NULL,
+    AirplaneId INT NOT NULL,
+    MaintainenceDateTime DATE NOT NULL,
+    FOREIGN KEY (MaintainenceTeam) REFERENCES AirplaneMaintainance(MaintainenceTeam),
+    FOREIGN KEY (AirplaneId) REFERENCES Airplane(AirplaneId)
 );
 
 CREATE TABLE AirportTerminal(
 	TerminalNumber CHAR(5) NOT NULL PRIMARY KEY,
-	FlightNumber VARCHAR(20) NOT NULL,
-  AirportCode VARCHAR(10) NOT NULL,
-  FOREIGN KEY (FlightNumber) REFERENCES AirlineFlight(FlightNumber),
-  FOREIGN KEY (AirportCode) REFERENCES Airport(AirportCode)
+	Status VARCHAR(10) NOT NULL,
+    AirportCode VARCHAR(10) NOT NULL,
+    FOREIGN KEY (AirportCode) REFERENCES Airport(AirportCode)
+);
+
+CREATE TABLE TerminalAirplane (
+	TerminalNumber CHAR(5) NOT NULL,
+    AirplaneId INT NOT NULL,
+    AssociatedTime DATETIME NOT NULL,
+    FOREIGN KEY (TerminalNumber)
 );
 
 CREATE TABLE Employee(
