@@ -9,12 +9,23 @@ CREATE TABLE Airport (
   State VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE AirlineFlight (
-  FlightNumber VARCHAR(20) NOT NULL PRIMARY KEY,
-  Airline VARCHAR(255) NOT NULL,
-  Weekdays VARCHAR(50) NOT NULL
+CREATE TABLE Airline (
+  AirlineName VARCHAR(20) NOT NULL PRIMARY KEY,
+  Sales INT NOT NULL
 );
 
+CREATE TABLE Employee(
+  EmployeeId CHAR(10) NOT NULL PRIMARY KEY,
+  EmployeeRank VARCHAR(20) NOT NULL,
+  TerminalNumber CHAR(5) NOT NULL,
+  TimeShiftPosition VARCHAR(20) NOT NULL,
+  FOREIGN KEY (TerminalNumber) REFERENCES AirportTerminal(TerminalNumber)
+);
+
+CREATE TABLE Flight(
+ FlightNumber CHAR(5) NOT NULL PRIMARY KEY,
+ FlightWeekdays VARCHAR(255) NOT NULL 
+);
 CREATE TABLE AirplaneType (
   TypeId INT NOT NULL PRIMARY KEY,
   TypeName VARCHAR(50) NOT NULL,
@@ -37,32 +48,18 @@ CREATE TABLE Airplane (
 );
 
 CREATE TABLE FlightTrip (
-  TripNumber CHAR(5) NOT NULL PRIMARY KEY,
-  FlightNumber VARCHAR(20) NOT NULL,
-  LegNumber INT NOT NULL,
-  DepartureAirportCode VARCHAR(10) NOT NULL,
-  ScheduledDepartureTime DATETIME NOT NULL,
-  ArrivalAirportCode VARCHAR(10) NOT NULL,
-  ScheduledArrivalTime DATETIME NOT NULL,
-  AvailableSeats INT NOT NULL,
-  AirplaneId INT NOT NULL,
-  Date DATE NOT NULL,
-  FOREIGN KEY (FlightNumber) REFERENCES AirlineFlight(FlightNumber),
-  FOREIGN KEY (DepartureAirportCode) REFERENCES Airport(AirportCode),
-  FOREIGN KEY (ArrivalAirportCode) REFERENCES Airport(AirportCode),
-  FOREIGN KEY (AirplaneId) REFERENCES Airplane(AirplaneId)
+  LegNumber INT NOT NULL PRIMARY KEY,
+  TripDate DATE NOT NULL,
+  FlightNumber CHAR(5) NOT NULL,
+  FOREIGN KEY (FlightNumber) REFERENCES Flight(FlightNumber)
 );
 
 CREATE TABLE Ticket (
-  ReservationId INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  Date DATE NOT NULL,
-  CustomerName VARCHAR(255) NOT NULL,
-  CustomerPhone VARCHAR(20) NOT NULL,
+  TicketNumber CHAR(10) NOT NULL PRIMARY KEY,
+  Class VARCHAR(10) NOT NULL,
+  LegNumber INT NOT NULL,
   SeatNumber INT NOT NULL,
-  ResidencyType VARCHAR(50) NOT NULL,
-  PaymentSystem VARCHAR(50) NOT NULL,
-  TripNumber CHAR(10) NOT NULL,
-  FOREIGN KEY (TripNumber) REFERENCES FlightTrip(TripNumber)
+  FOREIGN KEY (LegNumber) REFERENCES FlightNumber(LegNumber)
 );
 
 CREATE TABLE AirplaneMaintainance(
@@ -79,12 +76,6 @@ CREATE TABLE AirportTerminal(
   FOREIGN KEY (AirportCode) REFERENCES Airport(AirportCode)
 );
 
-CREATE TABLE Employee(
-  EmployeeId CHAR(10) NOT NULL PRIMARY KEY,
-  EmployeeRank VARCHAR(20) NOT NULL,
-  AirportCode VARCHAR(10) NOT NULL,
-  FOREIGN KEY (AirportCode) REFERENCES Airport(AirportCode)
-);
 
 CREATE TABLE CabinCrew(
 	AirplaneId INT NOT NULL,
@@ -101,11 +92,14 @@ CREATE TABLE NonCabinCrew(
 );
 
 CREATE TABLE Carriage(
-	CustomerPassportNumber CHAR(10) NOT NULL,
+	CarriageNumber CHAR(5) PRIMARY KEY NOT NULL,
     CarriageWeight INT NOT NULL,
-    CarriageNumber CHAR(5) PRIMARY KEY NOT NULL,
-    FOREIGN KEY (CustomerPassportNumber) REFERENCES Customer(PassportNumber)
+    TicketNumber CHAR(10) NOT NULL,
+    PassportNumber CHAR(10) NOT NULL,
+    FOREIGN KEY (TicketNumber) REFERENCES Ticket(TicketNumber),
+    FOREIGN KEY (PassportNumber) REFERENCES Customer(TicketNumber)
 );
+
 
 INSERT INTO Airport (AirportCode, AirportName, City, State)
 VALUES
