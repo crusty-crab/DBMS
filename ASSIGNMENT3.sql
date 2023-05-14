@@ -65,7 +65,7 @@ CREATE TABLE Ticket (
   Class VARCHAR(10) NOT NULL,
   LegNumber INT NOT NULL,
   SeatNumber INT NOT NULL,
-  FOREIGN KEY (LegNumber) REFERENCES FlightNumber(LegNumber)
+  FOREIGN KEY (LegNumber) REFERENCES FlightTrip(LegNumber)
 );
 
 CREATE TABLE AirplaneMaintainance(
@@ -89,9 +89,9 @@ CREATE TABLE AirportTerminal(
 
 CREATE TABLE TerminalAirplane (
 	TerminalNumber CHAR(5) NOT NULL,
-    AirplaneId INT NOT NULL,
-    AssociatedTime DATETIME NOT NULL,
-    FOREIGN KEY (TerminalNumber)
+  AirplaneId INT NOT NULL,
+  AssociatedTime DATETIME NOT NULL,
+  FOREIGN KEY (TerminalNumber) REFERENCES AirportTerminal(TerminalNumber)
 );
 
 
@@ -117,6 +117,19 @@ CREATE TABLE Carriage(
     FOREIGN KEY (TicketNumber) REFERENCES Ticket(TicketNumber),
     FOREIGN KEY (PassportNumber) REFERENCES Customer(TicketNumber)
 );
+
+CREATE TABLE ArrivalAndDeparture(
+  TerminalNumber CHAR(5) NOT NULL,
+  LegNumber INT NOT NULL,
+  ArrivalAirportCode VARCHAR(10) NOT NULL,
+  ArrivalTime DATETIME NOT NULL,
+  DepartureAirportCode VARCHAR(10) NOT NULL,
+  DepartureTime DATETIME NOT NULL,
+  Status VARCHAR(15) NOT NULL,
+  FOREIGN KEY (ArrivalAirportCode, DepartureAirportCode) REFERENCES Airport(AirportCode),
+  FOREIGN KEY (TerminalNumber) REFERENCES AirportTerminal(TerminalNumber),
+  FOREIGN KEY (LegNumber) REFERENCES FlightTrip(LegNumber)
+)
 
 
 INSERT INTO Airport (AirportCode, AirportName, City, State)
