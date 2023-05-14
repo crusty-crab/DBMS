@@ -24,8 +24,11 @@ CREATE TABLE Employee(
 
 CREATE TABLE Flight(
  FlightNumber CHAR(5) NOT NULL PRIMARY KEY,
- FlightWeekdays VARCHAR(255) NOT NULL 
+ FlightWeekdays VARCHAR(255) NOT NULL ,
+ AirlineName VARCHAR(20) NOT NULL,
+ FOREIGN KEY (AirlienName) REFERENCES Airline(AirlineName)
 );
+
 CREATE TABLE AirplaneType (
   TypeId INT NOT NULL PRIMARY KEY,
   TypeName VARCHAR(50) NOT NULL,
@@ -57,7 +60,9 @@ CREATE TABLE FlightTrip (
   LegNumber INT NOT NULL PRIMARY KEY,
   TripDate DATE NOT NULL,
   FlightNumber CHAR(5) NOT NULL,
-  FOREIGN KEY (FlightNumber) REFERENCES Flight(FlightNumber)
+  AirplaneId INT NOT NULL,
+  FOREIGN KEY (FlightNumber) REFERENCES Flight(FlightNumber),
+  FOREIGN KEY (AirplaneId) REFERENCES Airplane(AirplaneId)
 );
 
 CREATE TABLE Ticket (
@@ -65,7 +70,7 @@ CREATE TABLE Ticket (
   Class VARCHAR(10) NOT NULL,
   LegNumber INT NOT NULL,
   SeatNumber INT NOT NULL,
-  FOREIGN KEY (LegNumber) REFERENCES FlightNumber(LegNumber)
+  FOREIGN KEY (LegNumber) REFERENCES FlightTrip(LegNumber)
 );
 
 CREATE TABLE AirplaneMaintainance(
@@ -91,13 +96,14 @@ CREATE TABLE TerminalAirplane (
 	TerminalNumber CHAR(5) NOT NULL,
     AirplaneId INT NOT NULL,
     AssociatedTime DATETIME NOT NULL,
-    FOREIGN KEY (TerminalNumber)
+    FOREIGN KEY (TerminalNumber) REFERENCES AirportTerminal(TerminalNumber),
+    FOREIGN KEY (AirplaneId) REFERENCES Airplane(AirplaneId)
 );
 
 
 CREATE TABLE CabinCrew(
-	AirplaneId INT NOT NULL,
-	EmployeeId CHAR(10) NOT NULL,
+  AirplaneId INT NOT NULL,
+  EmployeeId CHAR(10) NOT NULL,
   FOREIGN KEY (AirplaneId) REFERENCES Airplane(AirplaneId),
   FOREIGN KEY (EmployeeId) REFERENCES Employee(EmployeeId)
 );
@@ -118,6 +124,13 @@ CREATE TABLE Carriage(
     FOREIGN KEY (PassportNumber) REFERENCES Customer(TicketNumber)
 );
 
+CREATE TABLE AirlineTicket(
+AirlineName VARCHAR(20) NOT NULL,
+TicketNumber CHAR(10) NOT NULL,
+IssueDate DATE NOT NULL,
+FOREIGN KEY (TicketNumber) REFERENCES Ticket(TicketNumber),
+FOREIGN KEY (AirlineName) REFERENCES Airline(AirlineName)
+);
 
 INSERT INTO Airport (AirportCode, AirportName, City, State)
 VALUES
