@@ -125,12 +125,25 @@ CREATE TABLE Carriage(
 );
 
 CREATE TABLE AirlineTicket(
-AirlineName VARCHAR(20) NOT NULL,
-TicketNumber CHAR(10) NOT NULL,
-IssueDate DATE NOT NULL,
-FOREIGN KEY (TicketNumber) REFERENCES Ticket(TicketNumber),
-FOREIGN KEY (AirlineName) REFERENCES Airline(AirlineName)
+  AirlineName VARCHAR(20) NOT NULL,
+  TicketNumber CHAR(10) NOT NULL,
+  IssueDate DATE NOT NULL,
+  FOREIGN KEY (TicketNumber) REFERENCES Ticket(TicketNumber),
+  FOREIGN KEY (AirlineName) REFERENCES Airline(AirlineName)
 );
+
+CREATE TABLE ArrivalAndDeparture(
+  TerminalNumber CHAR(5) NOT NULL,
+  LegNumber INT NOT NULL,
+  ArrivalAirportCode VARCHAR(10) NOT NULL,
+  ArrivalTime DATETIME NOT NULL,
+  DepartureAirportCode VARCHAR(10) NOT NULL,
+  DepartureTime DATETIME NOT NULL,
+  Status VARCHAR(15) NOT NULL,
+  FOREIGN KEY (ArrivalAirportCode, DepartureAirportCode) REFERENCES Airport(AirportCode),
+  FOREIGN KEY (TerminalNumber) REFERENCES AirportTerminal(TerminalNumber),
+  FOREIGN KEY (LegNumber) REFERENCES FlightTrip(LegNumber)
+)
 
 INSERT INTO Airport (AirportCode, AirportName, City, State)
 VALUES
